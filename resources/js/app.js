@@ -97,8 +97,7 @@ database.ref().on("child_added", function (childSnapshot) {
                       <li class="list-group-item">Most recent commit</li>
                       <li class="list-group-item text-success">${MyParentCardObj[cardObjName].message}</li>
                       <a href="#" class="btn btn-primary m-3">Send Slack Notification</a>
-                      
-                      
+                      <a href="#" class="btn btn-secondary m-3 delete">Delete Card</a>
                     </ul>
                     <div class="card-body">
                       <a href="${MyParentCardObj[cardObjName].repolink}" target="_blank" class="card-link">Repo link</a>
@@ -198,8 +197,7 @@ UserRepoBranchCard.prototype.pushToFirebase = function(userRepoBranchCardUI) {
                       <li class="list-group-item">Most recent commit</li>
                       <li class="list-group-item text-success">${MyParentCardObj[cardObjName].message}</li>
                       <a href="#" class="btn btn-primary m-3">Send Slack Notification</a>
-                      
-                      
+                      <a href="#" class="btn btn-secondary m-3 delete">Delete Card</a>
                     </ul>
                     <div class="card-body">
                       <a href="${MyParentCardObj[cardObjName].repolink}" target="_blank" class="card-link">Repo link</a>
@@ -224,11 +222,21 @@ UserRepoBranchCard.prototype.pushToFirebase = function(userRepoBranchCardUI) {
 // UI Constructor
 function UI() {};
 
-ui.clearInputFromForm = function() {
+UI.clearInputFromForm = function() {
   gitUserUI.value = '';
   repoNameUI.value = '';
   branchUI.value = '';
 }
+
+UI.prototype.deleteCard = function(target){
+  if(target.className === 'btn btn-secondary m-3 delete'){
+    target.parentElement.parentElement.remove();
+    console.log(target.className);
+   // Need to remove object
+   // Need to remove child from Firebase
+  }
+}
+
 
 // Add event listener for Add Repo
 document.getElementById('btn-input').addEventListener('click', function(e){
@@ -256,5 +264,17 @@ document.getElementById('btn-input').addEventListener('click', function(e){
   // validation would go here
   // Clear form
   ui.clearInputFromForm();
+
+})
+
+// Event Delegation - Event Listener for Card Delete
+document.getElementById('card-space').addEventListener('click', function(e){
+  const ui = new UI();
+
+  ui.deleteCard(e.target);
+  // Show alert
+  // ui.showalert('Card Removed', 'success');
+
+  e.preventDefault();
 
 })
