@@ -40,7 +40,7 @@ database.ref().on("child_added", function (childSnapshot) {
   const user = childSnapshot.val().user,
     repo = childSnapshot.val().repo,
     branch = childSnapshot.val().branch;
-  firebasechildkey = childSnapshot.key;
+  firebasechildkey = childSnapshot.key; // comma above?
   console.dir(firebasechildkey);
 
 
@@ -52,11 +52,12 @@ database.ref().on("child_added", function (childSnapshot) {
 
   // create initial object
  var userRepoBranchCard = new UserRepoBranchCard(user, repo, branch, cardObjName);
-
+// var ui = new UI();
   // Do the first 2 Git API calls and add to the userRepoBranchCard object
   gitconnect.getUserRepoBranch(user, repo, branch)
     .then(data => {
       if(data.profile.message === 'Not Found'){
+        
         ui.showAlert('User not found', 'alert alert-danger');
       } else {
         // Add information to object
@@ -143,7 +144,7 @@ UserRepoBranchCard.prototype.pushToFirebase = function(userRepoBranchCardUI) {
   })
 
   var firebasekeyNewSnap = newSnap.name();
-  userRepoBranchCardUI.firebasekey = firebasekeyNewSnap
+  userRepoBranchCardUI.firebasekey = firebasekeyNewSnap; 
 
   // Instantiate UserBranchRepoCard object
   let cardObjName = "card" + firebasekeyNewSnap;
@@ -222,7 +223,7 @@ UserRepoBranchCard.prototype.pushToFirebase = function(userRepoBranchCardUI) {
 // UI Constructor
 function UI() {};
 
-UI.clearInputFromForm = function() {
+UI.prototype.clearInputFromForm = function() {
   gitUserUI.value = '';
   repoNameUI.value = '';
   branchUI.value = '';
@@ -230,6 +231,17 @@ UI.clearInputFromForm = function() {
 
 UI.prototype.deleteCard = function(target){
   if(target.className === 'btn btn-secondary m-3 delete'){
+    // Delete Object from MyParentObj - key is in id of 
+    console.log(target.parentElement.parentElement.id);
+    let cardObjID2 = target.parentElement.parentElement.id;
+    console.log(typeof(cardObjID2), cardObjID2);
+    let fbkey = MyParentCardObj[cardObjID2].firebasekey;
+   delete MyParentCardObj[cardObjID2];
+   console.log(MyParentCardObj);
+    // let firebaseIdToDelete = 
+    // debugger;
+    // Delete from Firebase
+    database.ref().child(fbkey).remove();
     target.parentElement.parentElement.remove();
     console.log(target.className);
    // Need to remove object
@@ -237,7 +249,24 @@ UI.prototype.deleteCard = function(target){
   }
 }
 
-
+// Show Alert
+UI.prototype.showAlert = function(message, className) {
+  // Create div
+  const div = document.createElement('div');
+  // Add Classes
+  div.className = `alert ${className}`;
+  // Add text
+  div.appendChild(document.createTextNode(message));
+  // Get parent
+  const container = document.querySelector('.container2');
+  const form = document.querySelector('#repo-input');
+  // Insert alert
+  container.insertBefore(div, form);
+  // Timeout after 3 seconds
+  setTimeout(function(){
+    document.querySelector('.alert').remove();
+  }, 3000);
+}
 // Add event listener for Add Repo
 document.getElementById('btn-input').addEventListener('click', function(e){
   e.preventDefault();
@@ -247,10 +276,7 @@ document.getElementById('btn-input').addEventListener('click', function(e){
   const gitRepo = repoNameUI.value;
   const gitBranch = branchUI.value;
  
-  console.log("greetings from inside the form")
-  console.log(gitUser);
-  console.log(gitRepo);
-  console.log(gitBranch);
+
   // debugger;
   const userRepoBranchCardUI = new UserRepoBranchCard(gitUser, gitRepo, gitBranch);
   console.log("deep inside form");
@@ -269,8 +295,8 @@ document.getElementById('btn-input').addEventListener('click', function(e){
 
 // Event Delegation - Event Listener for Card Delete
 document.getElementById('card-space').addEventListener('click', function(e){
+  // instantiate ui object
   const ui = new UI();
-
   ui.deleteCard(e.target);
   // Show alert
   // ui.showalert('Card Removed', 'success');

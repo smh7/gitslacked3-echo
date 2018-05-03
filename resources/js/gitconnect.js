@@ -19,7 +19,7 @@ class GitConnect {
     const profileResponse = await fetch(`https://api.github.com/users/${user}?client_id=${this.client_id}&client_secret=${this.client_secret}`);
 
     // 2nd call for SHA with 
-    const profileShaResponse = await fetch(`https://api.github.com/repos/${user}/${repo}/git/refs/heads/${branch}`)
+    const profileShaResponse = await fetch(`https://api.github.com/repos/${user}/${repo}/git/refs/heads/${branch}?client_id=${this.client_id}&client_secret=${this.client_secret}`)
   
   
     const profile = await profileResponse.json();
@@ -32,7 +32,7 @@ class GitConnect {
   }
   async getRepoDetailedInfo(user, repo, branch, shaSpecific) {
    
-    const repoDetails = await fetch(`https://api.github.com/repos/${user}/${repo}/commits/${shaSpecific}`);
+    const repoDetails = await fetch(`https://api.github.com/repos/${user}/${repo}/commits/${shaSpecific}?client_id=${this.client_id}&client_secret=${this.client_secret}`);
 
     
     const userRepoDetailWithComments = await repoDetails.json();
