@@ -243,7 +243,7 @@ document.getElementById('btn-input').addEventListener('click', function(e){
   console.log(gitUser);
   console.log(gitRepo);
   console.log(gitBranch);
-  debugger;
+  // debugger;
   const userRepoBranchCardUI = new UserRepoBranchCard(gitUser, gitRepo, gitBranch);
   console.log("deep inside form");
   console.log(userRepoBranchCardUI);
