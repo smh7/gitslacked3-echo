@@ -104,7 +104,7 @@ database.ref().on("child_added", function (childSnapshot) {
                   <a href="#" class="btn btn-light m-3 delete">Delete Card</a>
                 </ul>
                 <div class="card-body">
-                  <a href="${MyParentCardObj[cardObjName].repolink}" class="card-link">Repo link</a>
+                  <a href="${MyParentCardObj[cardObjName].repolink}" class="card-link">${MyParentCardObj[cardObjName].repolink}</a>
                 </div>
               </div>
               `
@@ -197,7 +197,7 @@ UserRepoBranchCard.prototype.pushToFirebase = function(userRepoBranchCardUI) {
                         <a href="#" class="btn btn-light m-3 delete">Delete Card</a>
                       </ul>
                       <div class="card-body">
-                        <a href="${MyParentCardObj[cardObjName].repolink}" class="card-link">Repo link</a>
+                        <a href="${MyParentCardObj[cardObjName].repolink}" class="card-link">${MyParentCardObj[cardObjName].repolink}</a>
                       </div>
                     </div>
                     `
@@ -240,7 +240,8 @@ UI.prototype.deleteCard = function(target){
    // Need to remove object
   } else if(target.className === 'card-link'){
     // Need specific link
-    let url = 'https://github.com/smh7';
+    // var specificURL = target.parentElement.children.lastChild
+  //  var url = encodeURI(.html_url);
     var win = window.open(url, '_blank');
     win.focus();
   } else if(target.className === 'btn btn-primary m-3 slack'){
@@ -256,9 +257,7 @@ UI.prototype.deleteCard = function(target){
       type: "POST",
       url: queryURL
   });
-  
 
-    
   } 
 }
 
