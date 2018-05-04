@@ -47,8 +47,8 @@ database.ref().on("child_added", function (childSnapshot) {
 
   // Instantiate UserBranchRepoCard object
   let cardObjName = "card" + firebasechildkey;
-  console.log(cardObjName);
-  console.log(user);
+  // console.log(cardObjName);
+  // console.log(user);
 
   // create initial object
  var userRepoBranchCard = new UserRepoBranchCard(user, repo, branch, cardObjName);
@@ -59,16 +59,18 @@ database.ref().on("child_added", function (childSnapshot) {
       if(data.profile.message === 'Not Found'){
         
         ui.showAlert('User not found', 'alert alert-danger');
+
       } else {
         // Add information to object
-        console.log(data.profile);
+        // console.log(data.profile);
         // userRepoBranchCard.firebasekey = firebasechildkey;
         MyParentCardObj[cardObjName] = userRepoBranchCard;
         MyParentCardObj[cardObjName].avatar_url = data.profile.avatar_url;
         MyParentCardObj[cardObjName].firebasekey = firebasechildkey;
         MyParentCardObj[cardObjName].name = data.profile.name;
         MyParentCardObj[cardObjName].bio = data.profile.bio;
-        MyParentCardObj[cardObjName].repolink = data.profile.html_url;
+        var profileEncodedUrl = encodeURI(data.profile.html_url);
+        MyParentCardObj[cardObjName].repolink = profileEncodedUrl;
         MyParentCardObj[cardObjName].sha = data.profileRepoSha.object.sha;
         var shaSpecific1 = MyParentCardObj[cardObjName].sha.value;
         gitconnect.getRepoDetailedInfo(user, repo, branch, MyParentCardObj[cardObjName].sha)
@@ -76,7 +78,7 @@ database.ref().on("child_added", function (childSnapshot) {
           if(data.userRepoDetailWithComments === 'Not Found'){
             ui.showAlert('Details not found', 'alert alert-danger');
           } else {
-            console.log(data.userRepoDetailWithComments);
+            // console.log(data.userRepoDetailWithComments);
             
             MyParentCardObj[cardObjName].message = data.userRepoDetailWithComments.commit.message;
             // MyParentCardObj[cardObjName].timeofCommit = toString(data.userRepoDetailWithComments.commit.commiter.date);
@@ -86,31 +88,37 @@ database.ref().on("child_added", function (childSnapshot) {
             // building out the card and adding it to the page
               const cardSection = document.getElementById('card-space');
               const card = document.createElement('div');
-                    card.innerHTML = `
-                    <div class="card" id="${cardObjName}"style="width: 18rem;">
-                    <img class="card-img-top" src="${MyParentCardObj[cardObjName].avatar_url }" alt="Card image cap">
-                    <div class="card-body">
-                      <h5 class="card-title">${MyParentCardObj[cardObjName].name}</h5>
-                      <p class="card-text">${MyParentCardObj[cardObjName].bio}</p>
-                    </div>
-                    <ul class="list-group list-group-flush">
-                      <li class="list-group-item">For ${MyParentCardObj[cardObjName].repo} </li>
-                      <li class="list-group-item">Most recent commit</li>
-                      <li class="list-group-item text-success">${MyParentCardObj[cardObjName].message}</li>
-                      <a href="#" class="btn btn-primary m-3">Send Slack Notification</a>
-                      <a href="#" class="btn btn-secondary m-3 delete">Delete Card</a>
-                    </ul>
-                    <div class="card-body">
-                      <a href="${MyParentCardObj[cardObjName].repolink}" target="_blank" class="card-link">Repo link</a>
-                    </div>
-                  </div>
-                    `
+              card.innerHTML = `
+              <div class="card" id="${cardObjName}"style="width: 18rem;">
+              <img class="card-img-top" src="${MyParentCardObj[cardObjName].avatar_url }" alt="Card image cap">
+              <div class="card-body">
+                <h5 class="card-title">${MyParentCardObj[cardObjName].name}</h5>
+                <p class="card-text">${MyParentCardObj[cardObjName].bio}</p>
+              </div>
+              <ul class="list-group list-group-flush">
+                <li class="list-group-item">For ${MyParentCardObj[cardObjName].repo} </li>
+                <li class="list-group-item">Most recent commit</li>
+                <li class="list-group-item text-success">${MyParentCardObj[cardObjName].message}</li>
+                <div class="input-group mt-3 p-1">
+                <div class="input-group-prepend">
+                  <span class="input-group-text slack-${cardObjName}" id="input-slack-msg">Message</span>
+                </div>
+                <input type="text" class="form-control" id="slack-msg-text" aria-label="Default" aria-describedby="input slack message">
+              </div>
+                  <a href="#" class="btn btn-primary m-3 slack">Send Slack Notification</a>
+                  <a href="#" class="btn btn-light m-3 delete">Delete Card</a>
+                </ul>
+                <div class="card-body">
+                  <a href="${MyParentCardObj[cardObjName].repolink}" class="card-link">Repo link</a>
+                </div>
+              </div>
+              `
               cardSection.append(card);
             }
         })
         // MyParentCardObj[cardObjName].sha = data.profileRepoSha.sha;
-        console.dir(cardObjName);
-        console.dir(userRepoBranchCard);
+        // console.dir(cardObjName);
+        // console.dir(userRepoBranchCard);
         const objKeys = Object.keys(MyParentCardObj);
         console.log("objkeys: ", objKeys);
       }
@@ -126,8 +134,8 @@ function UserRepoBranchCard(user, repo, branch) {
   this.user = user;
   this.repo = repo;
   this.branch = branch;
-  console.log("greetings from inside the constructor");
-  console.dir(UserRepoBranchCard);
+  // console.log("greetings from inside the constructor");
+  // console.dir(UserRepoBranchCard);
 };
 
 // UserRepoBranchCard.prototype.populateCardDetails = function () {
@@ -148,8 +156,8 @@ UserRepoBranchCard.prototype.pushToFirebase = function(userRepoBranchCardUI) {
 
   // Instantiate UserBranchRepoCard object
   let cardObjName = "card" + firebasekeyNewSnap;
-  console.log(cardObjName);
-  console.log(user);
+  // console.log(cardObjName);
+  // console.log(user);
 
   // create initial object
 //  var userRepoBranchCard = new UserRepoBranchCard(user, repo, branch, cardObjName);
@@ -161,7 +169,7 @@ UserRepoBranchCard.prototype.pushToFirebase = function(userRepoBranchCardUI) {
         ui.showAlert('User not found', 'alert alert-danger');
       } else {
         // Add information to object
-        console.log(data.profile);
+        // console.log(data.profile);
         // userRepoBranchCard.firebasekey = firebasechildkey;
         MyParentCardObj[cardObjName] = userRepoBranchCardUI;
         MyParentCardObj[cardObjName].avatar_url = data.profile.avatar_url;
@@ -176,12 +184,12 @@ UserRepoBranchCard.prototype.pushToFirebase = function(userRepoBranchCardUI) {
           if(data.userRepoDetailWithComments === 'Not Found'){
             ui.showAlert('Details not found', 'alert alert-danger');
           } else {
-            console.log(data.userRepoDetailWithComments);
+            // console.log(data.userRepoDetailWithComments);
             
             MyParentCardObj[cardObjName].message = data.userRepoDetailWithComments.commit.message;
             // MyParentCardObj[cardObjName].timeofCommit = toString(data.userRepoDetailWithComments.commit.commiter.date);
         
-            // debugger;
+  
             
             // building out the card and adding it to the page
               const cardSection = document.getElementById('card-space');
@@ -197,13 +205,19 @@ UserRepoBranchCard.prototype.pushToFirebase = function(userRepoBranchCardUI) {
                       <li class="list-group-item">For ${MyParentCardObj[cardObjName].repo} </li>
                       <li class="list-group-item">Most recent commit</li>
                       <li class="list-group-item text-success">${MyParentCardObj[cardObjName].message}</li>
-                      <a href="#" class="btn btn-primary m-3">Send Slack Notification</a>
-                      <a href="#" class="btn btn-secondary m-3 delete">Delete Card</a>
-                    </ul>
-                    <div class="card-body">
-                      <a href="${MyParentCardObj[cardObjName].repolink}" target="_blank" class="card-link">Repo link</a>
+                      <div class="input-group mt-3 p-1">
+                      <div class="input-group-prepend">
+                        <span class="input-group-text slack-${cardObjName}" id="input-slack-msg">Message</span>
+                      </div>
+                      <input type="text" class="form-control" id="slack-msg-text" aria-label="Default" aria-describedby="input slack message">
                     </div>
-                  </div>
+                        <a href="#" class="btn btn-primary m-3 slack">Send Slack Notification</a>
+                        <a href="#" class="btn btn-light m-3 delete">Delete Card</a>
+                      </ul>
+                      <div class="card-body">
+                        <a href="${MyParentCardObj[cardObjName].repolink}" class="card-link">Repo link</a>
+                      </div>
+                    </div>
                     `
               cardSection.append(card);
             }
@@ -217,12 +231,13 @@ UserRepoBranchCard.prototype.pushToFirebase = function(userRepoBranchCardUI) {
     })
   // Handle the errors
 }, function (errorObject) {
-  console.log("Errors handled: " + errorObject.code);
+  // console.log("Errors handled: " + errorObject.code);
 };
 
 // UI Constructor
 function UI() {};
 
+// not sure how well this one is working
 UI.prototype.clearInputFromForm = function() {
   gitUserUI.value = '';
   repoNameUI.value = '';
@@ -230,23 +245,42 @@ UI.prototype.clearInputFromForm = function() {
 }
 
 UI.prototype.deleteCard = function(target){
+  let cardObjID2 = target.parentElement.parentElement.id;
+  
   if(target.className === 'btn btn-secondary m-3 delete'){
     // Delete Object from MyParentObj - key is in id of 
-    console.log(target.parentElement.parentElement.id);
-    let cardObjID2 = target.parentElement.parentElement.id;
-    console.log(typeof(cardObjID2), cardObjID2);
-    let fbkey = MyParentCardObj[cardObjID2].firebasekey;
+   var fbkey = MyParentCardObj[cardObjID2].firebasekey;
    delete MyParentCardObj[cardObjID2];
-   console.log(MyParentCardObj);
-    // let firebaseIdToDelete = 
-    // debugger;
+   database.ref().child(fbkey).remove();
+
     // Delete from Firebase
-    database.ref().child(fbkey).remove();
     target.parentElement.parentElement.remove();
-    console.log(target.className);
    // Need to remove object
-   // Need to remove child from Firebase
-  }
+  } else if(target.className === 'card-link'){
+    // Need specific link
+    // console.log("link should launch");
+    let url = 'https://github.com/smh7';
+    var win = window.open(url, '_blank');
+    win.focus();
+  } else if(target.className === 'btn btn-primary m-3 slack'){
+     console.log("Slack Process should Kick Off Specific to this card");
+  
+     var slackMsg = target.parentElement.children[3].children[1].value;
+     console.log(slackMsg);
+     var queryURL = "https://hooks.slack.com/services/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";
+     $.ajax({
+      data: 'payload=' + JSON.stringify({
+      "text": slackMsg
+      }),
+      processData: false,
+      type: "POST",
+      url: queryURL
+  });
+  
+    //  debugger;
+    
+    // console.log("info", message);
+  } 
 }
 
 // Show Alert
@@ -279,17 +313,13 @@ document.getElementById('btn-input').addEventListener('click', function(e){
 
   // debugger;
   const userRepoBranchCardUI = new UserRepoBranchCard(gitUser, gitRepo, gitBranch);
-  console.log("deep inside form");
-  console.log(userRepoBranchCardUI);
+  // console.log("deep inside form");
+  // console.log(userRepoBranchCardUI);
   userRepoBranchCardUI.pushToFirebase(userRepoBranchCardUI);
 
-  // Instantiate UI
-  const ui = new UI();
-
- 
-  // validation would go here
-  // Clear form
-  ui.clearInputFromForm();
+  gitUserUI.value = '';
+  repoNameUI.value = '';
+  branchUI.value = '';
 
 })
 
@@ -304,3 +334,7 @@ document.getElementById('card-space').addEventListener('click', function(e){
   e.preventDefault();
 
 })
+
+// Repo Link - Event Listener for within the cards
+// might incorporate into delete
+// document.getElementById('card-space').addEventListener('c')
