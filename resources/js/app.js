@@ -47,9 +47,6 @@ database.ref().on("child_added", function (childSnapshot) {
 
   // Instantiate UserBranchRepoCard object
   let cardObjName = "card" + firebasechildkey;
-  // console.log(cardObjName);
-  // console.log(user);
-
   // create initial object
  var userRepoBranchCard = new UserRepoBranchCard(user, repo, branch, cardObjName);
 // var ui = new UI();
@@ -62,7 +59,6 @@ database.ref().on("child_added", function (childSnapshot) {
 
       } else {
         // Add information to object
-        // console.log(data.profile);
         // userRepoBranchCard.firebasekey = firebasechildkey;
         MyParentCardObj[cardObjName] = userRepoBranchCard;
         MyParentCardObj[cardObjName].avatar_url = data.profile.avatar_url;
@@ -78,7 +74,6 @@ database.ref().on("child_added", function (childSnapshot) {
           if(data.userRepoDetailWithComments === 'Not Found'){
             ui.showAlert('Details not found', 'alert alert-danger');
           } else {
-            // console.log(data.userRepoDetailWithComments);
             
             MyParentCardObj[cardObjName].message = data.userRepoDetailWithComments.commit.message;
             // MyParentCardObj[cardObjName].timeofCommit = toString(data.userRepoDetailWithComments.commit.commiter.date);
@@ -134,15 +129,8 @@ function UserRepoBranchCard(user, repo, branch) {
   this.user = user;
   this.repo = repo;
   this.branch = branch;
-  // console.log("greetings from inside the constructor");
-  // console.dir(UserRepoBranchCard);
 };
 
-// UserRepoBranchCard.prototype.populateCardDetails = function () {
-//   const gitconnect = new GitConnect;
-
-
-// }
 
 UserRepoBranchCard.prototype.pushToFirebase = function(userRepoBranchCardUI) {
   var newSnap = database.ref().push({
@@ -156,8 +144,6 @@ UserRepoBranchCard.prototype.pushToFirebase = function(userRepoBranchCardUI) {
 
   // Instantiate UserBranchRepoCard object
   let cardObjName = "card" + firebasekeyNewSnap;
-  // console.log(cardObjName);
-  // console.log(user);
 
   // create initial object
 //  var userRepoBranchCard = new UserRepoBranchCard(user, repo, branch, cardObjName);
@@ -169,7 +155,6 @@ UserRepoBranchCard.prototype.pushToFirebase = function(userRepoBranchCardUI) {
         ui.showAlert('User not found', 'alert alert-danger');
       } else {
         // Add information to object
-        // console.log(data.profile);
         // userRepoBranchCard.firebasekey = firebasechildkey;
         MyParentCardObj[cardObjName] = userRepoBranchCardUI;
         MyParentCardObj[cardObjName].avatar_url = data.profile.avatar_url;
@@ -184,13 +169,10 @@ UserRepoBranchCard.prototype.pushToFirebase = function(userRepoBranchCardUI) {
           if(data.userRepoDetailWithComments === 'Not Found'){
             ui.showAlert('Details not found', 'alert alert-danger');
           } else {
-            // console.log(data.userRepoDetailWithComments);
             
             MyParentCardObj[cardObjName].message = data.userRepoDetailWithComments.commit.message;
             // MyParentCardObj[cardObjName].timeofCommit = toString(data.userRepoDetailWithComments.commit.commiter.date);
-        
-  
-            
+      
             // building out the card and adding it to the page
               const cardSection = document.getElementById('card-space');
               const card = document.createElement('div');
@@ -231,7 +213,7 @@ UserRepoBranchCard.prototype.pushToFirebase = function(userRepoBranchCardUI) {
     })
   // Handle the errors
 }, function (errorObject) {
-  // console.log("Errors handled: " + errorObject.code);
+  console.log("Errors handled: " + errorObject.code);
 };
 
 // UI Constructor
@@ -258,12 +240,10 @@ UI.prototype.deleteCard = function(target){
    // Need to remove object
   } else if(target.className === 'card-link'){
     // Need specific link
-    // console.log("link should launch");
     let url = 'https://github.com/smh7';
     var win = window.open(url, '_blank');
     win.focus();
   } else if(target.className === 'btn btn-primary m-3 slack'){
-     console.log("Slack Process should Kick Off Specific to this card");
   
      var slackMsg = target.parentElement.children[3].children[1].value;
      console.log(slackMsg);
@@ -277,9 +257,8 @@ UI.prototype.deleteCard = function(target){
       url: queryURL
   });
   
-    //  debugger;
+
     
-    // console.log("info", message);
   } 
 }
 
@@ -313,8 +292,7 @@ document.getElementById('btn-input').addEventListener('click', function(e){
 
   // debugger;
   const userRepoBranchCardUI = new UserRepoBranchCard(gitUser, gitRepo, gitBranch);
-  // console.log("deep inside form");
-  // console.log(userRepoBranchCardUI);
+
   userRepoBranchCardUI.pushToFirebase(userRepoBranchCardUI);
 
   gitUserUI.value = '';
