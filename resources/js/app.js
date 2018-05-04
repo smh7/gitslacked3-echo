@@ -2,6 +2,7 @@
 
 // Initialize Parent Card Object
 let MyParentCardObj = {};
+const ui = new UI();
 const gitconnect = new GitConnect;
 
 // UI
@@ -219,11 +220,11 @@ UserRepoBranchCard.prototype.pushToFirebase = function(userRepoBranchCardUI) {
 // UI Constructor
 function UI() {};
 
-// not sure how well this one is working
+// Clearing input
 UI.prototype.clearInputFromForm = function() {
-  gitUserUI.value = '';
-  repoNameUI.value = '';
-  branchUI.value = '';
+  document.getElementById('git-user').value = '';
+  document.getElementById('repo-name').value = '';
+  document.getElementById('branch-ui').value = '';
 }
 
 UI.prototype.deleteCard = function(target){
@@ -283,22 +284,35 @@ UI.prototype.showAlert = function(message, className) {
 document.getElementById('btn-input').addEventListener('click', function(e){
   e.preventDefault();
 
+  // Construct UI
+  var ui = new UI();
+
   // Get form values
   const gitUser = gitUserUI.value;
   const gitRepo = repoNameUI.value;
   const gitBranch = branchUI.value;
  
+  // Input Validation
+  if(gitUser === '' || gitRepo === '' || gitBranch === '') {
+    // Error alert
+    ui.showAlert('Please fill in all fields', 'error');
+  } else {
+    // Instantiate Card
+    const userRepoBranchCardUI = new UserRepoBranchCard(gitUser, gitRepo, gitBranch);
+    // Push Card Info to Firebase
+    userRepoBranchCardUI.pushToFirebase(userRepoBranchCardUI);  
+  
+  // Show Success
+  ui.showAlert('Repo Added!', 'success');
+  
+  // Clear Fields
+  ui.clearInputFromForm();
+  }
+  
+    e.preventDefault();
+  });
+ 
 
-  // debugger;
-  const userRepoBranchCardUI = new UserRepoBranchCard(gitUser, gitRepo, gitBranch);
-
-  userRepoBranchCardUI.pushToFirebase(userRepoBranchCardUI);
-
-  gitUserUI.value = '';
-  repoNameUI.value = '';
-  branchUI.value = '';
-
-})
 
 // Event Delegation - Event Listener for Card Delete
 document.getElementById('card-space').addEventListener('click', function(e){
@@ -312,6 +326,9 @@ document.getElementById('card-space').addEventListener('click', function(e){
 
 })
 
-// Repo Link - Event Listener for within the cards
-// might incorporate into delete
-// document.getElementById('card-space').addEventListener('c')
+// Add Event Listener for Clear Form
+document.getElementById('clear-results').addEventListener('click', function(e){
+  e.preventDefault();
+  ui.clearInputFromForm();
+
+});
