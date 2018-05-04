@@ -229,7 +229,7 @@ UI.prototype.clearInputFromForm = function() {
 UI.prototype.deleteCard = function(target){
   let cardObjID2 = target.parentElement.parentElement.id;
   
-  if(target.className === 'btn btn-light m-3 deletecd'){
+  if(target.className === 'btn btn-secondary m-3 delete'){
     // Delete Object from MyParentObj - key is in id of 
    var fbkey = MyParentCardObj[cardObjID2].firebasekey;
    delete MyParentCardObj[cardObjID2];
@@ -257,7 +257,7 @@ UI.prototype.deleteCard = function(target){
 
   } 
 }
-
+debugger;
 // Show Alert
 UI.prototype.showAlert = function(message, className) {
   // Create div
@@ -276,7 +276,6 @@ UI.prototype.showAlert = function(message, className) {
     document.querySelector('.alert').remove();
   }, 3000);
 }
-
 // Add event listener for Add Repo
 document.getElementById('btn-input').addEventListener('click', function(e){
   e.preventDefault();
