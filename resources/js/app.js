@@ -229,15 +229,17 @@ UI.prototype.clearInputFromForm = function() {
 UI.prototype.deleteCard = function(target){
   let cardObjID2 = target.parentElement.parentElement.id;
   
-  if(target.className === 'btn btn-light m-3 deletecd'){
+  if(target.className === 'btn btn-light m-3 delete'){
     // Delete Object from MyParentObj - key is in id of 
    var fbkey = MyParentCardObj[cardObjID2].firebasekey;
    delete MyParentCardObj[cardObjID2];
-   database.ref().child(fbkey).remove();
 
-    // Delete from Firebase
+   // Delete from Firebase
+   database.ref().child(fbkey).remove();
+  
+    // Delete from UI
     target.parentElement.parentElement.remove();
-   // Need to remove object
+
   } else if(target.className === 'card-link'){
     var win = window.open(url, '_blank');
     win.focus();
